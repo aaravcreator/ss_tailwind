@@ -1,0 +1,62 @@
+{% extends 'dashboard/base.html' %}
+
+{%load static%}
+{% block content %}
+
+{%block scripts%}
+<!-- Content Header (Page header) -->
+    <script src="{%static 'js/lesson.js'%} " defer></script>
+{%endblock scripts%}
+<div class="content-header">
+    <div class="container-fluid">
+        <h1> Manage <strong>Lesson</strong></h1>
+        <div class="row">
+            <div class="col-lg-12">
+                <a class='btn btn-success' href="{% url 'dashboard:add_lesson' course.id %}"><i class="fa fa-file"></i> Add Lesson</a>
+                <button class="btn btn-primary" id = "back">back</button>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr class='bg-success text-white'>
+                        <th scope="col">ID</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Lesson Number</th>
+                        <th scope="col">quiz</th>
+                        
+                        <th scope="col">Actions</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for lesson in lessons %}
+                    <tr>
+                        <th scope="row">{{lesson.id}}</th>
+                        <td>{{lesson.title}}</td>
+                        <td>{{lesson.lesson_number}}</td>
+                        
+                        <td><a href="{%url 'dashboard:manage_quiz' lesson.id%}" >{%if lesson.quiz_set.all.first%}Manage quiz :{{lesson.quiz_set.all.first}} {%else%} <a href="{%url 'dashboard:createquiz' lesson.id%}" class="btn btn-success">Add quiz</a> {%endif%}</a></td>
+                        
+                        <td>
+                            <a class='btn btn-warning' href="{% url 'dashboard:edit_lesson' course.id lesson.id %}"><i class="fa fa-edit"></i></a>
+                            <!-- <a class='btn btn-warning' href="#"><i class="fa fa-edit"></i></a> -->
+                            <a class='btn btn-danger' href="{% url 'dashboard:deletelesson' lesson.id %}"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+
+                    {%endfor%}
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+
+    </div>
+</div>
+
+{% endblock %}

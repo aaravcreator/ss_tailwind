@@ -1,0 +1,39 @@
+{% extends 'dashboard/base.html' %}
+
+{%load static%}
+{% block content %}
+
+{%block scripts%}
+<!-- Content Header (Page header) -->
+    <script src="{%static 'js/managequiz.js'%} " defer></script>
+{%endblock scripts%}
+    <div class="container">
+        <a href = "{%url 'dashboard:createquestion' quiz.id%}" class="mt-5 btn btn-success">create question</a>
+        <a href="{%url 'dashboard:editquiz' quiz.id%}" class="btn btn-warning mt-5">Edit Quiz <i class="fa fa-edit"></i></a>
+        <a href="{%url 'dashboard:deletequiz' quiz.id%}" class="btn btn-warning mt-5" >Delete Quiz <i class="fa fa-trash"></i></a>
+        <button class="btn btn-primary mt-5" id = "back" data-course = "{{quiz.lessons.Course.id}}">back</button>
+        <table class="table mt-5">
+            <thead>
+              <tr>
+                
+                <th scope="col">Questions</th>
+                <th>Action</th>
+                <th></th>
+                
+              </tr>
+            </thead>
+            <tbody>
+                {%for question in questions%}
+              <tr>
+                <th><a href="{%url 'dashboard:managequestion' question.id%}" > {{question}}</a></th>
+                <th><a href="{%url 'dashboard:editquestion' question.id %}" class="btn btn-warning"><i class="fa fa-edit">Edit</i></a></th>
+                <th><a href="{%url 'dashboard:deletequestion' question.id %}" class="btn btn-danger"><i class="fa fa-trash">Delete</i></a></th>
+
+                
+              </tr>
+              {%endfor%}
+              
+            </tbody>
+          </table>
+    </div>
+{%endblock content%}

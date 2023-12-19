@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load lock %}
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+        margin: 0;
+    }
+
+    .container-fluid {
+        margin-top: 20px;
+    }
+
+    .row {
+        display: flex;
+    }
+
+    .lesson-sidebar {
+        background-color: #ffffff;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        margin-right: 20px;
+        width: 250px;
+        position: sticky;
+        top: 70px;
+    }
+
+    .lesson-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .lesson-item {
+        border: 2px solid #e2e2e2;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        transition: background-color 0.3s, color 0.3s, opacity 0.3s;
+    }
+
+    .lesson-item.locked {
+        background-color: rgba(245, 245, 245, 0.7);
+        color: #868e96;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .lesson-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .lesson-item.active-video {
+        background-color: #f0f0f0;
+        color: #555;
+    }
+
+    .lesson-item a {
+        text-decoration: none;
+        color: #555;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .lock-icon {
+        color: #f39c12;
+        margin-left: 8px;
+    }
+
+    .main-content {
+        background-color: #ffffff;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        flex: 1;
+    }
+
+    .quiz-btn {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .quiz-btn:hover {
+        background-color: #218838;
+    }
+
+    .post-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .post-content {
+        font-size: 1.4rem;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    .alert {
+        margin-top: 20px;
+    }
+</style>
+
+<script src="{% static 'js/main.js' %}" defer></script>
+
+{% if lesson %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Lesson Sidebar -->
+        <div class="col-lg-3 lesson-sidebar">
+            <h1 class="my-2 text-center">Explore Lessons</h1>
+            <ul class="lesson-list">
+                {% for lesson_item in courses.lessons_set.all %}
+                <li class="lesson-item {% if lesson_item == lesson %} active-video {% endif %} {% if not lesson_item|is_verified:request.user %} locked {% endif %}">
+                    <a href="{% url 'course_lesson' courses.slug lesson_item.slug %}"
+                    {% if lesson_item|is_verified:request.user %} class="span" {% endif %}
+                    {% if not lesson_item|is_verified:request.user %} onclick="return false;" {% endif %}>
+                     <div>{{ lesson_item }}
+                         {% if not lesson_item|is_verified:request.user %} <i class="fa-solid fa-lock lock-icon"></i> {% endif %}
+                     </div>
+                 </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 main-content">
+            <div class="row justify-content-end">
+                <button class="btn btn-success col-lg-5 mb-4 quiz-btn" id="quiz-btn" data-pk="{{ lesson.slug }}"
+                    data-course="{{ lesson.Course.slug }}" data-lesson="{{ lesson.lesson_number }}">
+                    Unlock Next Lesson with a Quiz <i class="fa-solid fa-unlock"></i>
+                </button>
+            </div>
+            <hr>
+            <div class="col-sm-12">
+                <!-- Post content -->
+                <article>
+                    <!-- Post header -->
+                    <header class="mb-4">
+                        <!-- Post title -->
+                        <h1 class="post-title">{{ lesson.title }}</h1>
+                    </header>
+                    <section class="mb-5">
+                        <p class="post-content">{{ lesson.body|safe }}</p>
+                    </section>
+                </article>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="alert alert-secondary my-5" role="alert">
+    <h3 class="px-5 text-center">Thank you for visiting! The course will be available soon.</h3>
+</div>
+{% endif %}
+{% endblock content %}

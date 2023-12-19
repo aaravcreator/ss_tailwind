@@ -1,0 +1,38 @@
+{% extends 'dashboard/base.html' %}
+
+{%load static%}
+{% block content %}
+{%block scripts%}
+<!-- Content Header (Page header) -->
+    <script src="{%static 'js/managequestion.js'%} " defer></script>
+{%endblock scripts%}
+    <div class="container">
+        <a href = "{%url 'dashboard:createuser'%}" class="mt-5 btn btn-success">create User</a>
+        
+        <table class="table mt-5">
+            <thead>
+              <tr>
+                
+                <th scope="col">Users</th>
+                <th>Action</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+                {%for user in users%}
+              <tr>
+                
+                <th><a href=>{{user.username}}</a></th>
+                
+                <th><a href="{%url 'dashboard:edituser' user.id %}" class="btn btn-warning"><i class="fa fa-edit">Edit</i></a></th>
+                <th><a href="{%url 'dashboard:deleteuser' user.id %}" class="btn btn-danger"><i class="fa fa-trash">Delete</i></a></th>
+
+               
+                
+              </tr>
+              {%endfor%}
+              
+            </tbody>
+          </table>
+    </div>
+{%endblock content%}

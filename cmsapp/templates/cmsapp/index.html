@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    {% load myapp_extras %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_page.css' %}">
+
+    <style>
+        /* Your existing styles here */
+        .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+            background-color: rgb(242, 236, 236);
+        }
+
+        .nav-tabs .nav-link {
+            color: rgb(56, 54, 51);
+            border: 1px solid rgb(242, 236, 236);
+            border-radius: 5px 5px 0 0;
+        }
+
+        .form-control:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+
+            .course-content {
+                margin-bottom: 20px; /* Adjust as needed */
+            }
+        }
+                .selected-category {
+            background-color: rgb(242, 236, 236);
+        }
+
+        .course-card {
+            width: 20rem;
+        }
+
+        .pagination-container {
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: rgb(56, 54, 51);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: rgb(242, 236, 236);
+            border-color: rgb(242, 236, 236);
+        }
+
+        .search-bar-container {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .searchResult {
+            display: none;
+        }
+
+        .search-bar {
+            width: 60%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .category-list {
+            margin-top: 30px;
+        }
+
+        .quickAccess {
+            display: none;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h5 {
+            color: #333;
+        }
+
+        hr {
+            border-color: #ddd;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .see-all {
+            background-color: rgb(18, 161, 218);
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .see-all:hover {
+            background-color: rgb(8, 141, 188);
+        }
+        .container-fluid {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.course-content {
+    flex: 1;
+}
+
+
+    </style>
+
+    <!-- Page header with logo and tagline -->
+    <section class="py-5 bg-light border-bottom mb-4" style="position: relative; "  >
+        <div class="container" >
+           
+
+            <div class="container search-bar-container" style="position: relative;">
+                <form method="post" action="" class="d-flex justify-content-center align-items-center" autocomplete="off" id="search">
+                    {% csrf_token %}
+                    <div class="input-group" style="max-width: 700px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" style="background-color: white; border: none;"><i class="fas fa-search" style="color: gray; background-color: white; margin-right: 5px;"></i></span>
+                        </div>
+                        <input type="text" name="query" class="form-control search-bar p-4 d-flex" id="searchItem" style="outline: none; margin-right: -5px;" placeholder="Search for Course / Quick Access" onfocus="hideQuickAccess()" onblur="showQuickAccess()">
+                    </div>
+                </form>
+
+                <div class="card container mt-2 searchResult" id="searchResult" style="max-width: 700px; position:absolute; z-index: 100; right:0; left:0; margin:auto;">
+                    
+                    
+                </div>
+            </div>
+
+            <!-- Messages loop -->
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="alert alert-info my-2 container text-center">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Page content -->
+    <section class="container-fluid px-5 mt-3" style="position: relative; ">
+        <h1 class="text-center my-5">Our Courses</h1>
+
+        <!-- Middle Section - Search Bar -->
+        <!-- ... (Your existing search bar code) ... -->
+
+        <!-- Below the Description - List of Courses with Categories -->
+        <div class="container category-list">
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link {% if categoryID == 0 %} active {% endif %}" href="/#course">All</a>
+                </li>
+                {% for category in categories %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if category.id == categoryID %} active {% endif %}" href="/?category={{ category.id }}#course" style="color: rgb(0, 170, 255);">{{ category.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="row">
+                {% for course in courses %}
+                    <div class="card shadow p-2 mb-4 bg-white rounded mx-2 course-card">
+                        <img class="card-img-top" src="{{ course.image.url }}" alt="image" height="150px" width="180px">
+                        <div class="card-body container">
+                            <h5 class="">{{ course.title }}</h5>
+                            <div>
+                                <!-- Card Body Content -->
+                                <div>
+                                    <a href="{% url 'course' course.slug %}" class="btn btn-primary">Visit Course</a>
+                                    {% if request.user.is_authenticated %}
+                                        {% if x == True %}
+                                            <a class="btn btn-secondary" href="{% url 'deleteCourse' course.id %}">Remove!! read later</a>
+                                        {% else %}
+                                            <form method="post" style="display: inline-block;" action="#{{ course.id }}">
+                                                {% csrf_token %}
+                                                <input type="text" value="{{ course.id }}" name="course_id" style="display:none;">
+                                                <button class="btn btn-secondary" id="{{ course.id }}">Add to read later <i class="fa-sharp fa-solid fa-bookmark"></i></button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pagination Section -->
+        
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-md-4 offset-lg-5">
+                    {% if courses.has_other_pages %}
+                        <div>
+                            <ul class="pagination pagination-lg container">
+                                {% if courses.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="{% my_url courses.previous_page_number 'page' request.GET.urlencode %}#course"
+                                           tabindex="-1" style="color: black;">Previous</a>
+                                    </li>
+                                {% endif %}
+                                {% for i in courses.paginator.page_range %}
+                                    <li class="page-item {% if i == page %}active{% endif %}">
+                                        <a class="page-link"
+                                           href="{% my_url i 'page' request.GET.urlencode %}#course"
+                                           style="color: rgb(56, 54, 51)">{{ i }} </a>
+                                    </li>
+                                {% endfor %}
+                                {% if courses.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="{% my_url courses.next_page_number 'page' request.GET.urlencode %}#course"
+                                           tabindex="-1" style="color: black;">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+    </section>
+
+    <!-- ... (Your existing code) ... -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputField = document.getElementById("searchItem");
+
+            function handleKeyDown(event) {
+                if (event.key === '/') {
+                    setTimeout(function () {
+                        inputField.focus();
+                    }, 0);
+                }
+                if (event.key === 'Escape') {
+                    setTimeout(function () {
+                        inputField.blur();
+                    }, 0);
+                }
+            }
+
+            document.addEventListener('keyup', handleKeyDown);
+        });
+
+        
+
+        const searchForm = document.getElementById("search");
+        const searchInput = document.getElementById("searchItem");
+
+        const resultBox = document.getElementById('searchResult');
+        const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        const url = window.location.href
+
+        function sendSearchData(inputData) {
+            $.ajax({
+                type: 'POST',
+                url: 'seachCourse/',
+                data: {
+                    'csrfmiddlewaretoken': csrf,
+                    'inputData': inputData
+                },
+                success: (res) => {
+                    const data = res.data;
+                    resultBox.innerHTML =" "
+                    if (Array.isArray(data)){ 
+                        data.forEach(res=>{ 
+                            resultBox.innerHTML += `
+                            
+                                <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
+                                    <a  href ="http://127.0.0.1:8000/course/${res.slug}" 
+                                    " class="card-title mb-0" style = "color:blue;text-decoration:none; ">${res.title}</a>
+                                </div>
+                                <hr/>
+
+                                `
+                            console.log(data)
+                        })
+                        console.log(data)
+                       
+                        
+                    }
+                    else{
+                        resultBox.innerHTML += `<h3>${data}</h3>`
+                    }
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            });
+        }
+
+        searchInput.addEventListener('keyup', (e) => {
+            if (!e.target.value.trim()) {
+                resultBox.classList.add("searchResult");
+            } else {
+                resultBox.classList.remove("searchResult");
+            }
+            if (e.key === 'Escape') {
+                    setTimeout(function () {
+                        resultBox.classList.add("searchResult");
+
+                    }, 0);
+                }
+            sendSearchData(e.target.value);
+        });
+    </script>
+{% endblock content %}

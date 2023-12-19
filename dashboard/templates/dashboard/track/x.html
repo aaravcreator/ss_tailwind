@@ -1,0 +1,58 @@
+{% extends 'dashboard/base.html' %}
+{%load static%}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+{%block scripts%}
+<!-- Content Header (Page header) -->
+    <link rel="stylesheet" href="{%static 'css/chart.css'%}">
+    <script src="{%static 'js/chart.js'%} " defer></script>
+{%endblock scripts%}
+
+<div class="content-header">
+    <div class="container-fluid">
+
+        <br>
+        <div class="row">
+            <table class="table table-bordered table-striped table-sm-5">
+                <thead>
+                    <tr class='bg-success text-white'>
+                        <th scope="col">ID</th>
+                        <th scope="col">Course</th>
+                        <th>progress</th>
+                        <th>Action</th>
+                      
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for course in coruses%}
+                    <tr>
+                        <td></td>
+                        <td>
+                                {{course.course}}
+                        </td>
+                        <td>
+                            <div class="container">
+                                <div class="box">
+                                  <div class="chart" data-percent="5" data-scale-color="#ffb400"></div>
+                                  
+                                </div>
+                              </div>
+                              
+                        </td>
+                        <th><a class = "btn btn-primary"href="{%url 'course' course.course.slug%}">continue</a></th>
+                    </tr>
+                    {%endfor%}
+
+                    
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+{% endblock %}

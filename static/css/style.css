@@ -1,0 +1,20 @@
+.not-visible {
+    display: none;
+    transition: 0.5s;
+}
+
+.red { 
+    color:red;
+}
+
+#my-canvas{
+    position: absolute;
+    z-index: 1000;
+    
+}
+
+.hide{
+
+    display: none;
+    transition: 0.5s;
+}

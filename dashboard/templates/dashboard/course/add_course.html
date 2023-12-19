@@ -1,0 +1,26 @@
+{% extends 'dashboard/base.html' %}
+{% load crispy_forms_tags %}
+
+{%block content %}
+<div class="card card-acent-primary">
+    <div class="card-header"> Add New Course</div> 
+    <div class="card-body">
+      <form  method='POST' action= "" enctype="multipart/form-data"  class="modal-content">
+        {%csrf_token%}
+        <br>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row">     
+                    {%for form_fields in form %}
+                    <div class="col-lg-12">
+                      {{form_fields | as_crispy_field}}           
+                    </div>                   
+                    {%endfor%}               
+                  </div>
+            </li>      
+        <button type='submit' class="btn btn-primary">Add</button>
+        </ul>
+      </form>
+  
+    </div>
+{%endblock%}

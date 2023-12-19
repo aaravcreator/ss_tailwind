@@ -1,0 +1,70 @@
+{% extends 'dashboard/base.html' %}
+{%load static%}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+{%block scripts%}
+<!-- Content Header (Page header) -->
+    <link rel="stylesheet" href="{%static 'css/chart.css'%}">
+    <script src="{%static 'js/chart.js'%} " defer></script>
+    <script src="{%static 'js/jquery.appear.min.js'%}" defer></script>
+    <script src="{%static 'js/jquery.easypiechart.min.js'%}" defer></script> 
+{%endblock scripts%}
+
+<div class="content-header">
+    <div class="container-fluid">
+
+        <br>
+        {%if coruses%}
+        <div class="row">
+            
+            <table class="table table-bordered  table-sm-5">
+                <thead>
+                    <tr class='bg-success text-white'>
+                        
+                        <th scope="col">Course</th>
+                        <th scope="col">progress</th>
+                        <!-- <th scope="col">Current lesson</th> -->
+                        <th scope="col">Action</th>
+                        
+                      
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for course in coruses%}
+                    <tr >
+                        
+                        <td class="ml-5">
+                                {{course.course}}
+                        </td>
+                        <td>
+                            <div class="containerr ">
+                                <div class="box ml-5">
+                                  <div class="chart" data-percent="{{course.percent }}" data-scale-color="#1b1a1a">{{course.lesson_number}}/{{course.course.lessons_set.count}}</div>
+                                  
+                                </div>
+                              </div>
+                              
+                        </td>
+                       
+                        <th><a class = "btn btn-primary"href="{%url 'course' course.course.slug%}">continue</a></th>
+                    </tr>
+                    {%endfor%}
+
+                    
+
+                </tbody>
+            </table>
+            
+
+        </div>
+        {%else%}
+            <h1 class = "text-center alert alert-danger mt-5">No lesson to track</h1>
+        {%endif%}
+
+
+    </div>
+</div>
+
+{% endblock %}

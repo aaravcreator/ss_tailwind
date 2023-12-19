@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block scripts %}
+    <script src="{% static 'js/quiz.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/celebration.js' %}"></script>
+{% endblock scripts %}
+
+{% block content %}
+    <canvas id="my-canvas" class="not-visible"></canvas>
+
+    <div class="container mt-5">
+        <div class="card p-4 shadow-lg rounded-3 bg-light text-dark">
+            <h3 class="text-center mb-4" id = "title">{{ obj.title }}</h3>
+
+            <div class="alert alert-danger not-visible" id="message-alert" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                Oops! Nothing is selected.
+            </div>
+
+           
+            <div class="alert alert-danger not-visible" id = "failed_alert" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h1 class="text-center" style="color:black;">Sorry, you Failed! 😟 Please try again</h1>
+                <br>
+                <div class="justify-self-center"><h4 class="color-white text-center">You will be redirected you the lesson page in</h4><h4 class="countdown text-center" id = "countdown"></h4></div>
+                
+            </div>
+            <div class="alert alert-success not-visible" id="passed-alert" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h1 class="text-center text-success mb-4">Congratulations! 🎉 You passed the exam</h1>
+                <div class="text-center">
+                    <h4 class="text-dark mb-4">You will be redirected to the next lesson page in</h4>
+                    <h4 class="countdown" id="countdown1"></h4>
+                </div>
+            </div>
+
+            
+
+            
+            <form action="" method = "post" id = "quiz-form" class="mt-3 mb-3">
+                {%csrf_token%}
+                <div id="quiz-box">
+        
+                </div>
+                <button type = "submit" class="btn btn-primary mt-3" id="savebtn">save</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

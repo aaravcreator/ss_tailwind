@@ -1,0 +1,84 @@
+{% load static %}
+
+<nav class="bg-gray-900 sticky top-0 z-[500] backdrop-blur-sm ">
+    <div class="container px-5 mx-auto sm:px-5 lg:px-5">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center md:w-3/12"><a href="/" class="text-white font-bold text-xl"><img
+                        src="{% static 'img/sikshyashala.svg'%}" class="w-56 h-16" alt="Sikshyashala Logo"></a></div>
+            <!-- <div class="items-center w-5/12 hidden md:flex">
+                <form class="w-full">
+                    <div class="flex w-full">
+                        <div class="relative w-full"><input type="search" value="" id="search"
+                                name="search"
+                                class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                                placeholder="Search Exams,MCQs..." required=""><button type="submit"
+                                class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"><svg
+                                    aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg><span class="sr-only">Search</span></button></div>
+                    </div>
+                </form>
+            </div> -->
+            <div class="flex items-center">
+                <div class="flex lg:hidden"><button id="toggle-btn" type="button"
+                        class="text-gray-500 hover:text-white focus:outline-none focus:text-white"
+                        aria-label="Toggle menu"><svg viewBox="0 0 20 20" class="h-6 w-6 fill-current">
+                            <path fill-rule="evenodd"
+                                d="M3 4h14a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2zm0 5h14a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2zm0 5h14a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2z">
+                            </path>
+                        </svg></button></div>
+                <div id="desktop-nav" class="hidden lg:flex"><a aria-current="page" href="/"
+                        class="router-link-active router-link-exact-active text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a><a
+                        href="/events"
+                        class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium border-b-2 border-blue-500">Events</a>
+                    <div class="flex">
+                        {% if user.is_anonymous %}
+                        <a class="px-5 py-1 shadow-lg hover:scale-105 mr-2 bg-white text-gray-700 rounded-full" href="#">Login</a>
+                        <!-- <button class="px-5 py-1 shadow-lg hover:scale-105 text-white rounded-full ring-1 ring-white">Signup</button> -->
+                    
+                        {% else %}
+                        <div    class="flex items-center justify-center px-5 py-1 shadow-lg hover:scale-105 mr-2 bg-gray-700 ring-1 ring-blue-500 text-gray-400 rounded-full" >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400 mr-1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                                {{request.user.full_name}}
+                            </div>
+                        {% endif %}
+
+                        </div>
+                   
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-nav" class="lg:hidden top-12 bg-gray-800 w-full hidden">
+        <div class="px-2 pt-2 pb-3">
+            <div class="mt-2 w-full">
+                <form class="">
+                    <div class="flex"><label for="search-dropdown"
+                            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                        <div class="relative w-full"><input type="search" id="search-dropdown" name="search"
+                                class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                                placeholder="Search College..." required="" autocomplete="off"><button type="submit"
+                                class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"><svg
+                                    aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg><span class="sr-only">Search</span></button></div>
+                    </div>
+                </form>
+            </div>
+            <a aria-current="page" href="/"
+                class="router-link-active router-link-exact-active block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">Home</a><a
+                href="/events"
+                class="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">Events</a>
+        </div>
+    </div>
+
+
+    
+</nav>

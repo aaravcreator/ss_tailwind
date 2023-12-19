@@ -1,0 +1,10 @@
+<!-- search_result_template.html -->
+{% if courses %}
+    {% for course in courses %}
+        <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
+            <h5 class="card-title mb-0">{{ course.title }}</h5>
+        </div>
+    {% endfor %}
+{% else %}
+    <h3>No Course found</h3>
+{% endif %}

@@ -1,0 +1,42 @@
+{% extends 'dashboard/base.html'%}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+<div class="card card-acent-primary">
+    <div class="card-header"> Update Lesson | <a href="{% url 'dashboard:manage_lesson' course.id %}">{{course.title}}</a><strong>  | Total Lessons[{{lesson_count}}]</strong></div>
+    <div class="card-body">
+        <div class="row">
+            <p><strong>LAST LESSON</strong> : {{last_lesson.title}}</p>
+        </div>
+        <form method='POST' action="" enctype="multipart/form-data" class="modal-content">
+            {%csrf_token%}
+            <br>
+            <ul class="list-group list-group-flush">
+                <div class="row m-2">
+                    {{form.media}}
+                    {%for form_fields in form %}
+                    <div class="col-lg-12 ">
+                      {{form_fields | as_crispy_field}}           
+                    </div>                   
+                    {%endfor%} 
+                </div>
+
+
+            </ul>
+            <button type='submit' class="btn btn-primary">Update</button>
+        </form>
+
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+
+
+
+
