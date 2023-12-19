@@ -6,7 +6,10 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
-
+import uuid
+from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from cmsapp.forms import CourseForm, LessonForm, QuizForm, QuestionForm, AnswerForm
 from cmsapp.filters import CourseFilter
 from cmsapp.models import Course, lessons, Quiz, Question, Answer, Tracklesson, User, Person
@@ -38,7 +41,7 @@ def add_course(request):
         if request.method == "POST":
             course_form = CourseForm(request.POST, request.FILES)
             if course_form.is_valid():
-                form = course_form.save(author=request.user)
+                form = course_form.save()
                 messages.success(request, "Course Created")
                 return redirect("dashboard:manage_course")
         else:
@@ -301,15 +304,41 @@ def deleteanswer(request,answer):
 
 
 
+    
+
+
 def createuser(request):
     if request.user.usertype == "admin":
         if request.method == "POST":
             username = request.POST.get('username')
             password = request.POST.get('password')
+            email = request.POST.get('email')
             usertype = request.POST.get('usertype')
-            createuser = User.objects.create_user(username=username,password=password,usertype = usertype)
-            profile_obj = Person.objects.create(user = createuser,is_verified = True,auth_token = str(uuid.uuid4) )
-            profile_obj.save()
+            checkuser = User.objects.filter(username = username)
+            if checkuser: 
+                messages.success(request,'user already exisits')
+            else:
+
+                createuser = User.objects.create_user(username=username,password=password,usertype = usertype)
+               
+
+                profile_obj = Person.objects.create(user = createuser,is_verified = True,auth_token = str(uuid.uuid4) )
+                profile_obj.save()
+                
+                subject = 'Thank you for successfull registration, here are your login credential'
+                html_message = render_to_string('email/login_email_template.html', {'website_url': 'http://127.0.0.1:8000/',
+                                                                                    'username': username,
+                                                                                    'password': password})
+                email_from = settings.EMAIL_HOST_USER
+
+                send_mail(
+                    subject,
+                    html_message,  # Fixed the order of parameters
+                    email_from,         # Replace with the recipient's email address
+                    [email],  # Corrected the recipient's email address
+                    html_message=html_message,
+                )
+                messages.success(request,"email sent and user created ")
             
             # createuser.save()
             return redirect('dashboard:createuser')

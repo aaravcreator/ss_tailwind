@@ -1,0 +1,97 @@
+<!-- login_email_template.html -->
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Credentials</title>
+
+    <!-- Add some modern styling -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        header img {
+            max-width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #3498db;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background-color: #297fb8;
+        }
+
+        footer {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- <img src="https://mcqapi.pi-innovations.com.np/static/images/sikshyashala.svg" alt="Logo"> -->
+        <h1>Login Credentials for {{username }}</h1>
+    </header>
+    
+    <div>
+        <p>Dear {{username }},</p>
+        
+        <p>Thank you for joining our website! Below are your login credentials:</p>
+        
+        <ul>
+            <li><strong>Username:</strong> {{ username }}</li>
+            <li><strong>Password:</strong> {{ password }}</li>
+        </ul>
+        
+        <p>You can log in to our website by visiting the following link:</p>
+        
+        <p><a href="sikshyashala.com">Login Now</a></p>
+        
+        <p>If you have any questions or need assistance, feel free to contact us.</p>
+    </div>
+
+    <footer>   
+        <p>Best regards,<br>PI INNOVATIONS team</p>
+    </footer>
+</body>
+</html>
