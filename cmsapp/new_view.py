@@ -1,9 +1,11 @@
 from django.shortcuts import render
-from .models import Event
+from .models import *
 def tw_view(request):
     events = Event.objects.all()
+    courses = Course.objects.all()
     context = {
-        'events':events
+        'events':events,
+        'courses':courses
 
         
     }

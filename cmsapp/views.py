@@ -14,9 +14,6 @@ from django.http import JsonResponse
 from django.urls import reverse
 from cmsapp.forms import *
 
-
-
-
 # Create your views here.
 def watchlater(request):
     if request.user.is_authenticated:
