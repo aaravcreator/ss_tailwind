@@ -7,7 +7,7 @@ register = template.Library()
 def is_verified(lesson,user):
     # lesson_ = lessons.objects.filter(slug = lessons)
     slug = lesson.slug
-    print(slug)
+    # print(slug)
     lesson_ = lessons.objects.filter(slug = slug).first()
     
     if lesson_.lesson_number == 1:
