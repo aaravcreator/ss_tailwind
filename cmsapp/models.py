@@ -40,6 +40,9 @@ class Course(models.Model):
     image = models.ImageField(upload_to = 'img')
     slug= models.SlugField(unique = True)
     created = models.DateTimeField(auto_now_add = True)
+    ispaid = models.BooleanField(default = False)
+    required_points = models.BigIntegerField(default = 0 )
+
  
     def __str__(self):
         return self.title
@@ -200,3 +203,18 @@ class Event(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
+    
+
+
+class UserCourseStatus(models.Model): 
+    user = models.ForeignKey(User,on_delete = models.CASCADE)
+    course = models.ForeignKey(Course,on_delete = models.CASCADE)
+    can_access = models.BooleanField(default = False)
+    def __str__(self):
+        return f"{self.user}-{self.course}"
+    
+
+
+class UserCoin(models.Model): 
+    user = models.ForeignKey(User,on_delete = models.CASCADE)
+    coin_amount = models.BigIntegerField(default = 0)

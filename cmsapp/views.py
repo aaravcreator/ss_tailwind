@@ -13,6 +13,8 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.urls import reverse
 from cmsapp.forms import *
+import requests
+import json
 
 # Create your views here.
 def watchlater(request):
@@ -114,60 +116,70 @@ def index(request):
     return render(request,'cmsapp/index_tw.html',{'courses':courses,'categories':categories,'categoryID':int(categoryID),'page':page})
 @login_required(login_url='login')
 def course(request, slug,lesson_slug):
+    
     courses = Course.objects.filter(slug = slug).first()
     total = courses.lessons_set.all().count()
     lesson_ = lessons.objects.filter(slug = lesson_slug).first()
-    # print(lesson_.lesson_number)
-    # print(total)
 
-    if lesson_slug:
-        try:
-            lesson = lessons.objects.get(
-                slug=lesson_slug, Course=courses)
-
-        except lessons.DoesNotExist:
-            lesson = None
-    else:
-        lesson = lessons.objects.get(
-                lesson_number=1, Course=courses)
-    tracklesson = Tracklesson.objects.filter(user = request.user,course = courses).first()
-    if tracklesson:
-        tracklesson.user = request.user
-        tracklesson.lesson_slug = lesson_slug
+    if courses.ispaid:
+        usercoursestatus = UserCourseStatus.objects.filter(user = request.user,course = courses).first()
         
-        if tracklesson.lesson_number<lesson_.lesson_number:
-            # print(lesson_.lesson_number)
-            tracklesson.lesson_number = lesson_.lesson_number
         
-            
-        # tracklesson.lesson_number = 
-        tracklesson.save()
-    elif not tracklesson:
-        tracklesson1 = Tracklesson(user = request.user,course = courses,lesson_slug = lesson_slug,lesson_number = 1)
-        tracklesson1.save()
+        if usercoursestatus and usercoursestatus.can_access ==True: 
 
-    if lesson.lesson_number==1:
-        return render(request, 'cmsapp/course.html', {'courses': courses, 'lesson': lesson})
-    elif lesson.lesson_number!=1:
+            if lesson_slug:
+                try:
+                    lesson = lessons.objects.get(
+                        slug=lesson_slug, Course=courses)
 
-        lesson_ = lessons.objects.filter(Course = courses,lesson_number = lesson.lesson_number-1).first()
-        quiz = Quiz.objects.filter(course = courses,lessons = lesson_).first()
-        result = Result.objects.filter(quiz = quiz,user = request.user).first()
-        if result :
-            if result.passed  :          
-                return render(request, 'cmsapp/course.html', {'courses': courses, 'lesson': lesson,'result':result.passed})
-            
+                except lessons.DoesNotExist:
+                    lesson = None
             else:
+                lesson = lessons.objects.get(
+                        lesson_number=1, Course=courses)
+            tracklesson = Tracklesson.objects.filter(user = request.user,course = courses).first()
+            if tracklesson:
+                tracklesson.users = request.user
+                tracklesson.lesson_slug = lesson_slug
+                # print('tracklesson',tracklesson.lesson_number)
+                # print('lesson',lesson_.lesson_number)
                 
-                return redirect(f"/course/{courses.slug}/{lesson_.slug}")
-        elif  lesson.is_locked==False:
-            
-            return render(request, 'cmsapp/course.html', {'courses': courses, 'lesson': lesson,})
+                if tracklesson.lesson_number<lesson_.lesson_number:
+                    # print(lesson_.lesson_number)
+                    tracklesson.lesson_number = lesson_.lesson_number
+                
+                    
+                # tracklesson.lesson_number = 
+                tracklesson.save()
+            elif not tracklesson:
+                tracklesson1 = Tracklesson(user = request.user,course = courses,lesson_slug = lesson_slug,lesson_number = 1)
+                tracklesson1.save()
 
-            
+            if lesson.lesson_number==1:
+                return render(request, 'cmsapp/course.html', {'courses': courses, 'lesson': lesson})
+            elif lesson.lesson_number!=1:
+
+                lesson_ = lessons.objects.filter(Course = courses,lesson_number = lesson.lesson_number-1).first()
+                print(lesson.lesson_number)
+                quiz = Quiz.objects.filter(course = courses,lessons = lesson_).first()
+                result = Result.objects.filter(quiz = quiz,user = request.user).first()
+                if result:
+                    if result.passed  :          
+                        return render(request, 'cmsapp/course.html', {'courses': courses, 'lesson': lesson,'result':result.passed})
+                    
+                    else:
+                        
+                        return redirect(f"/course/{courses.slug}/{lesson_.slug}")
+                elif  lesson.is_locked==False:
+                    
+                    return render(request, 'cmsapp/course.html', {'courses': courses, 'lesson': lesson,})
+
+                    
+                else:
+                    
+                    return redirect(f"/course/{courses.slug}/{lesson_.slug}")
         else:
-            
-            return redirect(f"/course/{courses.slug}/{lesson_.slug}")
+            return redirect("/")
     
 
 
@@ -445,12 +457,6 @@ def requestproject(request):
     return JsonResponse({})
 
 
-
-
-
-
-
-
 def register(request):
     if not request.user.is_authenticated:
         try:
@@ -547,3 +553,100 @@ def liveSearch(request):
         return JsonResponse({"data":res})
     else:
         return JsonResponse({}) 
+    
+
+
+
+def accessCourse(request,slug):
+
+    usercoin = UserCoin.objects.filter(user = request.user).first()
+    course = Course.objects.filter(slug = slug).first()
+    lesson = course.lessons_set.all().first()
+    coursestatus = UserCourseStatus.objects.filter(user = request.user,course = course).first()
+    if not coursestatus.can_access:
+
+        if request.method == "POST":
+            usercoursestatus = UserCourseStatus.objects.filter(user = request.user,course = course).first()
+            
+            if usercoursestatus:
+                usercoin_ = UserCoin.objects.filter(user = request.user).first()
+                usercoin_.coin_amount = usercoin_.coin_amount - course.required_points
+                usercoin_.save()
+
+
+                usercoursestatus.can_access = True
+                usercoursestatus.save()
+                return redirect(reverse('course_lesson' ,kwargs={'slug':slug,'lesson_slug':lesson.slug}))
+
+            else: 
+                usercoursestatus_ = UserCourseStatus(user = request.user,course = course,can_access = True)
+                usercoin_ = UserCoin.objects.filter(user = request.user).first()
+                usercoin_.coin_amount = usercoin_.coin_amount - course.required_points
+                usercoin_.save()
+                usercoursestatus_.save()
+                return redirect(reverse('course_lesson' ,kwargs={'slug':slug,'lesson_slug':lesson.slug}))
+
+        else:
+        
+            if int(usercoin.coin_amount)<int(course.required_points) :
+                validate = False
+            else:
+                validate = True
+            return render(request,'cmsapp/accessCourseDetail.html',{'validate':validate})
+    else:
+        print()
+        return redirect('/')
+    
+
+def buycoins(request):
+    usercoin = UserCoin.objects.filter(user = request.user).first()
+    uuids = uuid.uuid4()
+    return render(request,'cmsapp/buyMoreCoins.html',{'usercoin':usercoin,'uuid':uuids})
+
+
+def khalti_request(request): 
+    url = "https://a.khalti.com/api/v2/epayment/initiate/"
+    if request.method == "POST": 
+        
+        purchase_order_id = request.POST.get('purchase_order_id')
+        coin_amount = request.POST.get('coin_amount')
+        return_url = request.POST.get('return_url')
+        
+        amount = int(coin_amount)*100
+        print(return_url)
+        print(purchase_order_id)
+        print(amount)
+
+
+        payload = json.dumps({
+            "return_url": return_url,
+            "website_url": "http://127.0.0.1:8000/",
+            "amount": amount,
+            "purchase_order_id": purchase_order_id,
+            "purchase_order_name": "test",
+            "customer_info": {
+            "name": "bisesh adhikari",
+            "email": "adhikari1590@gmail.com",
+            "phone": "9800000001"
+            }
+        })
+        headers = {
+            'Authorization': 'key 55dbe8ff588b4434adb16309045db658',
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        new_res = json.loads(response.text)
+
+        return redirect(new_res['payment_url'])
+
+
+def verify(request):
+    paisa_amount = request.GET.get('amount')
+    coin_amount = int(paisa_amount)/100
+    usercoin = UserCoin.objects.filter(user = request.user).first()
+    usercoin.coin_amount = usercoin.coin_amount + coin_amount
+    usercoin.save()
+
+
+    return redirect('home')

@@ -3,9 +3,11 @@ from .models import *
 def tw_view(request):
     events = Event.objects.all()
     courses = Course.objects.all()
+    usercoin = UserCoin.objects.filter(user = request.user).first()
     context = {
         'events':events,
-        'courses':courses
+        'courses':courses,
+        'usercoin':usercoin
 
         
     }

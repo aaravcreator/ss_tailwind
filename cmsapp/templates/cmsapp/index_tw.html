@@ -1,5 +1,6 @@
 {% extends 'base_tw.html' %}
 {% load static %}
+{% load course_status %}
 
 
 
@@ -129,8 +130,13 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
                 </svg>
             </div>
-            <a href="{%url 'course' course.slug%}" class="block mt-2 text-lg leading-tight font-medium text-black hover:underline">
-                {{course.title}}</a>
+            {% if not course|course_status:request.user %}
+                <a href = "{%url 'accessCourse' course.slug%}" class="p-4 bg-green-500 rounded-xl shadow-lg text-white ">Access Course for {{course.required_points}}&#129689;</a>
+            {%else%}
+            <a href="{%url 'course' course.slug%}" class="p-4 bg-green-500 rounded-xl shadow-lg text-white ">
+                visit Course</a>
+            {%endif%}
+                
             <!-- <p class="mt-2 text-gray-800">GIT is a version control system </p> -->
         </div>
         <!-- Bookmark BTN -->
@@ -143,16 +149,6 @@
 
 
 </div>
-
-
-
-
-
-
-
-
-
-
 
 
 {% endblock content %}
