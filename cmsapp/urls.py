@@ -27,7 +27,12 @@ urlpatterns = [
     path('request/',views.requestproject,name = "requestproject"),
     path('token_send/',views.token_send,name = 'tokensend'),
     path('verify/<auth_token>',views.verify,name = 'verify'),
-    path("seachCourse/",views.liveSearch,name = "liveSearch")
+    path("seachCourse/",views.liveSearch,name = "liveSearch"),
+    path("accessCourse/<str:slug>/",views.accessCourse,name = "accessCourse"),
+    path('coinStatus',views.buycoins,name = "coinStatus"),
+    path('verify/',views.verify,name = "verify"),
+    path('initiate/',views.khalti_request,name = "initiate"),
+    path('forms/<int:pk>', views.eventRegister, name='evetRegister'),
     
 
 ]

@@ -1,0 +1,38 @@
+{% extends 'base_tw.html' %}
+{% load static %}
+
+{% block content %}
+{%if validate%}
+<div class="container mx-auto mt-10">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md">
+        <h2 class="text-2xl font-semibold mb-6">Confirm Access</h2>
+        
+        <p class="mb-6">Are you sure you want to access this course for 10 coins?</p>
+        
+        <div class="flex flex-col  md:flex-row md:justify-between mt-5">
+            <form action="" method = "post">
+                {%csrf_token%}
+                <button class="flex-grow ml-5 p-3 bg-green-500 text-white rounded-md mb-2 md:mb-0 md:mr-2 text-center" href = "">Confirm</button>
+            </form>
+            <div class="flex items-center jusity-center">
+                <a class="flex-grow ml-5 p-3 bg-red-500 text-white rounded-md mb-2  md:mb-0 md:mr-2 text-center" href = "/">Cancel</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+{%else%}
+<div class="container mx-auto mt-10">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md">
+        
+        
+        <p class="mb-6 font-bold text-[40px] text-center">Insufficient coins</p>
+        
+        <div class="flex flex-col  md:flex-row md:justify-between mt-5">
+            <a class="flex-grow flex items-center justify-center p-3 bg-green-500 text-white rounded-md mb-2 md:mb-0 md:mr-2 " href = "{%url 'coinStatus'%}">Buy more coins &#129689;</a>
+            
+        </div>
+    </div>
+</div>
+{%endif%}
+{% endblock content %}

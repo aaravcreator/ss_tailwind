@@ -7,6 +7,11 @@ from django.template.defaultfilters import slugify
 import uuid 
 from django.contrib.auth.models import AbstractUser
 from cmsapp.manager import UserManager
+import qrcode
+from io import BytesIO
+from django.core.files import File
+from django.template.defaultfilters import slugify
+from django.conf import settings
 
 Usertype =(
     ('student', 'student'),
@@ -40,6 +45,9 @@ class Course(models.Model):
     image = models.ImageField(upload_to = 'img')
     slug= models.SlugField(unique = True)
     created = models.DateTimeField(auto_now_add = True)
+    ispaid = models.BooleanField(default = False)
+    required_points = models.BigIntegerField(default = 0 )
+
  
     def __str__(self):
         return self.title
@@ -198,5 +206,51 @@ class Event(models.Model):
     syllabus = models.FileField(upload_to='syllabus')
     status = models.CharField(choices= STATUS_CHOICES,max_length=20,default="UPCOMING")
     timestamp = models.DateTimeField(auto_now_add=True)
+    qr_code = models.ImageField(upload_to='qr_codes',blank= True)
+
     def __str__(self):
         return self.name
+    def save(self,*args, **kwargs):
+        self.slug = f"{slugify(self.name)}-{str(uuid.uuid4())}"
+        site = f"{settings.SITE_URL}/forms/{self.pk}"
+
+        qr = qrcode.QRCode(version=1,error_correction=qrcode.constants.ERROR_CORRECT_H,box_size=10,border=4)
+        qr.add_data(site)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color ="black",back_color = "white")
+        fname = f'qr_code-{self.name}+.png'
+        buffer = BytesIO()
+        img.save(buffer,'PNG')
+        self.qr_code.save(fname,File(buffer),save=False)
+        super().save(*args, **kwargs)
+    
+
+
+class UserCourseStatus(models.Model): 
+    user = models.ForeignKey(User,on_delete = models.CASCADE)
+    course = models.ForeignKey(Course,on_delete = models.CASCADE)
+    can_access = models.BooleanField(default = False)
+    def __str__(self):
+        return f"{self.user}-{self.course}"
+    
+
+
+class UserCoin(models.Model): 
+    user = models.ForeignKey(User,on_delete = models.CASCADE)
+    coin_amount = models.BigIntegerField(default = 0)
+
+
+class EventRegister(models.Model): 
+    CHOICES = [
+        ('SEE','SEE'),
+        ('+2','+2'),
+        ('Bachelors','Bachelors'),
+    ]
+    event = models.ForeignKey(Event,on_delete = models.CASCADE,null = True,blank = True)
+    name = models.CharField(max_length = 200)
+    contact_number = models.CharField(max_length = 200)
+    email = models.CharField(max_length = 200 )
+    eduction = models.CharField(choices= CHOICES,max_length=20)
+    School_or_College_name = models.CharField(max_length=200)
+    is_verified = models.BooleanField(default = False)
+

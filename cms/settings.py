@@ -98,7 +98,7 @@ DATABASES = {
     }
 }
 AUTH_USER_MODEL = "cmsapp.User" 
-
+SITE_URL = 'https://127.0.0.1:8000'
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -194,7 +194,6 @@ EMAIL_HOST_PASSWORD = 'amrbaqgxlnwsdgtx'
 #             ]),
 #     }
 # }
-
 CKEDITOR_CONFIGS = {
     'default': {
         'skin': 'moono',
@@ -205,20 +204,17 @@ CKEDITOR_CONFIGS = {
                 'Bold',
                 'Italic',
                 'CodeSnippet' ,
+                'FontSize',  # Added FontSize here
                 'Image',
-                'Media'
-                # 'image' # add the codesnippet button name
+                'Media',
             ]}
         ],
 
         'codeSnippet_theme': 'monokai',
-        
+
         # uncomment to restrict only those languages
         'codeSnippet_languages': {
             'python': 'Python',
-            
-            
-            
         },
         'toolbar': 'MyCustomToolbar',
         'extraPlugins': ','.join(
@@ -231,3 +227,4 @@ CKEDITOR_CONFIGS = {
             ]),
     }
 }
+

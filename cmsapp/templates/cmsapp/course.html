@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_tw.html' %}
 {% block content %}
 {% load static %}
 {% load lock %}
@@ -17,6 +17,7 @@
 
     .row {
         display: flex;
+        flex-wrap: wrap;
     }
 
     .lesson-sidebar {
@@ -89,6 +90,8 @@
         border-radius: 12px;
         cursor: pointer;
         transition: background-color 0.3s;
+        max-width: 300px; /* Set your desired maximum width */
+        margin-bottom: 20px; /* Add bottom margin */
     }
 
     .quiz-btn:hover {
@@ -111,6 +114,23 @@
     .alert {
         margin-top: 20px;
     }
+
+    @media (max-width: 768px) {
+        .row {
+            flex-direction: column;
+        }
+
+        .lesson-sidebar {
+            width: 100%;
+            margin-right: 0;
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            width: 100%;
+        }
+    }
+    
 </style>
 
 <script src="{% static 'js/main.js' %}" defer></script>
@@ -119,7 +139,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Lesson Sidebar -->
-        <div class="col-lg-3 lesson-sidebar">
+        <div class="lesson-sidebar">
             <h1 class="my-2 text-center">Explore Lessons</h1>
             <ul class="lesson-list">
                 {% for lesson_item in courses.lessons_set.all %}
@@ -128,7 +148,7 @@
                     {% if lesson_item|is_verified:request.user %} class="span" {% endif %}
                     {% if not lesson_item|is_verified:request.user %} onclick="return false;" {% endif %}>
                      <div>{{ lesson_item }}
-                         {% if not lesson_item|is_verified:request.user %} <i class="fa-solid fa-lock lock-icon"></i> {% endif %}
+                         {% if not lesson_item|is_verified:request.user %} <i class="lock-icon"></i> {% endif %}
                      </div>
                  </a>
                 </li>
@@ -137,23 +157,21 @@
         </div>
 
         <!-- Main Content -->
-        <div class="col-lg-9 main-content">
-            <div class="row justify-content-end">
-                <button class="btn btn-success col-lg-5 mb-4 quiz-btn" id="quiz-btn" data-pk="{{ lesson.slug }}"
-                    data-course="{{ lesson.Course.slug }}" data-lesson="{{ lesson.lesson_number }}">
-                    Unlock Next Lesson with a Quiz <i class="fa-solid fa-unlock"></i>
-                </button>
+        <div class="main-content">
+            <div class="quiz-btn" id="quiz-btn" data-pk="{{ lesson.slug }}"
+                data-course="{{ lesson.Course.slug }}" data-lesson="{{ lesson.lesson_number }}">
+                Unlock Next Lesson with a Quiz <i class="fa-solid fa-unlock"></i>
             </div>
             <hr>
-            <div class="col-sm-12">
+            <div>
                 <!-- Post content -->
                 <article>
                     <!-- Post header -->
-                    <header class="mb-4">
+                    <header>
                         <!-- Post title -->
-                        <h1 class="post-title">{{ lesson.title }}</h1>
+                        <h1 class="post-title text-center">{{ lesson.title }}</h1>
                     </header>
-                    <section class="mb-5">
+                    <section>
                         <p class="post-content">{{ lesson.body|safe }}</p>
                     </section>
                 </article>
@@ -163,8 +181,8 @@
 </div>
 
 {% else %}
-<div class="alert alert-secondary my-5" role="alert">
-    <h3 class="px-5 text-center">Thank you for visiting! The course will be available soon.</h3>
+<div class="alert" role="alert">
+    <h3>Thank you for visiting! The course will be available soon.</h3>
 </div>
 {% endif %}
 {% endblock content %}

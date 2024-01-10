@@ -383,7 +383,7 @@ def deleteuser(request,user):
 def trackcourse(request):
     course = Tracklesson.objects.filter(user = request.user)
 
-    return render(request,'dashboard/track/coursetrack.html',{'coruses':course})
+    return render(request,'dashboard/track/coursetrack.html',{'courses':course})
 
 
 
@@ -393,3 +393,5 @@ def trackcourse(request):
 #         inputData = request.POST.get("inputData")
 #         print(inputData)  
 #         return JsonResponse(("data":inputData))
+
+

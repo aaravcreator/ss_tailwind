@@ -9,68 +9,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} SikshyaShala {%endblock title %}</title>
     {% include 'head/css.html' %}
+    <link href="ckeditor/plugins/codesnippet/lib/highlight/styles/default.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <link rel="stylesheet"
+    href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
+<style>
+    body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-<!-- <body class="font-poppins bg-slate-900"> -->
-    <body class="font-poppins bg-white">
-
-
+</style>
+<body class="flex flex-col">
 
     <!-- Nav -->
-
-    {% include 'tw_nav.html' %}
-
-
-
-    <div class="">
-        
-
-        {% block content %}
-
-
-        {% endblock content %}
-    </div>
-    <footer class="text-gray-400 body-font mt-[150px]">
-        <div
-            class="container px-5 mt-10 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
-            <div class="w-64 flex-shrink-0 md:mx-0 mx-auto text-center md:text-left"><a
-                    class="flex title-font font-medium items-center md:justify-start justify-center text-white"><img
-                        src="{% static 'img/sikshyashala.svg' %}" class="w-56 h-16 " alt="Sikshyashala Logo"><span
-                        class="ml-3 text-xl hidden">SikshyaShala</span></a>
-                <p class="mt-2 text-sm text-gray-500">Your Education,Your Choice</p>
+    
+<nav class="bg-gray-900 sticky top-0 z-[500] backdrop-blur-sm ">
+    <div class="container px-5 mx-auto sm:px-5 lg:px-5">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center md:w-3/12"><a href="/" class="text-white font-bold text-xl"><img
+                        src="{% static 'img/sikshyashala.svg'%}" class="w-56 h-16" alt="Sikshyashala Logo"></a></div>
+            <!-- <div class="items-center w-5/12 hidden md:flex">
+                <form class="w-full">
+                    <div class="flex w-full">
+                        <div class="relative w-full"><input type="search" value="" id="search"
+                                name="search"
+                                class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                                placeholder="Search Exams,MCQs..." required=""><button type="submit"
+                                class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"><svg
+                                    aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg><span class="sr-only">Search</span></button></div>
+                    </div>
+                </form>
+            </div> -->
+            <div class="flex items-center">
+                <div class="flex lg:hidden"><button id="toggle-btn" type="button"
+                        class="text-gray-500 hover:text-white focus:outline-none focus:text-white"
+                        aria-label="Toggle menu"><svg viewBox="0 0 20 20" class="h-6 w-6 fill-current">
+                            <path fill-rule="evenodd"
+                                d="M3 4h14a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2zm0 5h14a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2zm0 5h14a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2z">
+                            </path>
+                        </svg></button></div>
+                <div id="desktop-nav" class="hidden lg:flex"><a aria-current="page" href="/"
+                        class="router-link-active router-link-exact-active text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        {% if user.is_anonymous %}
+                        <a class="px-5 py-1 shadow-lg hover:scale-105 mr-2 bg-white text-gray-700 rounded-full" href="{%url 'login'%}">Login</a>
+                        <!-- <button class="px-5 py-1 shadow-lg hover:scale-105 text-white rounded-full ring-1 ring-white">Signup</button> -->
+                    
+                        {% else %}
+                        <div    class="flex items-center cursor-pointer justify-center px-5 py-1 shadow-lg hover:scale-105 mr-2 bg-gray-700 ring-1 ring-blue-500 text-gray-400 rounded-full" >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400 mr-1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                                {{request.user.username}}
+                        </div>
+                        <a class="px-5 flex justify-center items-center py-1 shadow-lg hover:scale-105 mr-2 bg-indigo-500 text-white rounded-full" href="{%url 'dashboard:dashboard_index'%}">Dashboard</a>
+                        <div class="px-5 cursor-pointer flex flex-col justify-center items-center shadow-lg hover:scale-105 mr-2 bg-white text-black rounded-full" >
+                            <a href = "{%url 'coinStatus'%}">&#129689; {{request.user.usercoin_set.all.first.coin_amount}} Coins</a>
+                            
+                        </div>
+                        <a class="px-5  flex justify-center items-center py-1 shadow-lg hover:scale-105 mr-2 bg-white text-gray-700 rounded-full" href="{%url 'logout'%}">Logout</a>
+                        {% endif %}
+                        
+                        </div>
+                   
+                        
+                </div>
             </div>
         </div>
-        <div class="">
+    </div>
+    <div id="mobile-nav" class="lg:hidden top-12 bg-gray-800 w-full hidden">
+        <div class="px-2 pt-2 pb-3">
+            <div class="mt-2 w-full">
+                <form class="">
+                    <div class="flex"><label for="search-dropdown"
+                            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                        <div class="relative w-full"><input type="search" id="search-dropdown" name="search"
+                                class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                                placeholder="Search College..." required="" autocomplete="off"><button type="submit"
+                                class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"><svg
+                                    aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg><span class="sr-only">Search</span></button></div>
+                    </div>
+                </form>
+            </div>
+            <a aria-current="page" href="/"
+                class="router-link-active router-link-exact-active block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">Home</a><a
+                href="/events"
+                class="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">Events</a>
+        </div>
+    </div>
+
+
+    
+</nav>
+    
+    {% block content %}
+    {% endblock content %}
+
+    <footer style="margin-top: auto;" class="text-white relative  p-2  bg-gray-900 flex-shrink-0">
+        <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+            <div class="flex-shrink-0 w-64 text-center md:text-left">
+                <a class="flex title-font font-medium items-center text-white" href="#">
+                    <img src="{% static 'img/sikshyashala.svg' %}" class="w-12 h-12" alt="Sikshyashala Logo">
+                </a>
+                <p class="mt-2 text-sm text-black">Your Education, Your Choice</p>
+            </div>
+        </div>
+        <div class="bg-gray-800">
             <div class="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
-                <p class="text-gray-400 text-sm text-center sm:text-left">© 2023 SikshyaShala </p><span
-                    class="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start"><a
-                        class="text-gray-400 hover:text-blue-700 hover:bg-white hover:rounded-sm cursor-pointer"
-                        href="https://facebook.com/sikshyashala"><svg fill="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
-                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-                        </svg></a><a class="ml-3 text-gray-400"><svg fill="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                <p class="text-gray-400 text-sm text-center sm:text-left">© 2023 SikshyaShala </p>
+                <span class="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
+                    <a class="text-gray-400 hover:text-blue-700 hover:bg-gray-700 hover:rounded-sm p-2"
+                        href="https://facebook.com/sikshyashala">
+                        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            class="w-5 h-5" viewBox="0 0 24 24">
+                            <path
+                                d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z">
+                            </path>
+                        </svg>
+                    </a>
+                    <a class="text-gray-400 hover:text-blue-700 hover:bg-gray-700 hover:rounded-sm p-2 ml-3">
+                        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            class="w-5 h-5" viewBox="0 0 24 24">
                             <path
                                 d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
                             </path>
-                        </svg></a><a class="ml-3 text-gray-400"><svg fill="none" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5"
-                            viewBox="0 0 24 24">
+                        </svg>
+                    </a>
+                    <a class="text-gray-400 hover:text-blue-700 hover:bg-gray-700 hover:rounded-sm p-2 ml-3">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
                             <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
                             <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-                        </svg></a><a class="ml-3 text-gray-400"><svg fill="currentColor" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="0" class="w-5 h-5"
-                            viewBox="0 0 24 24">
+                        </svg>
+                    </a>
+                    <a class="text-gray-400 hover:text-blue-700 hover:bg-gray-700 hover:rounded-sm p-2 ml-3">
+                        <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
                             <path stroke="none"
                                 d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z">
                             </path>
                             <circle cx="4" cy="4" r="2" stroke="none"></circle>
-                        </svg></a></span>
+                        </svg>
+                    </a>
+                </span>
             </div>
         </div>
     </footer>
-
-
 
 </body>
 

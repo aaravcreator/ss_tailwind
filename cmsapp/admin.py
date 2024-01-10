@@ -72,3 +72,6 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ("username",)
     ordering = ("username",)
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(UserCourseStatus)
+admin.site.register(UserCoin)
+admin.site.register(EventRegister)
