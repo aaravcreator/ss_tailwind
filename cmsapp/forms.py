@@ -89,3 +89,31 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = '__all__'
         
+
+
+# forms.py
+from django import forms
+from .models import EventRegister
+
+class EventRegisterForm(forms.ModelForm):
+    class Meta:
+        model = EventRegister
+        exclude = ['is_verified','event',]
+
+    def __init__(self, *args, **kwargs):
+        super(EventRegisterForm, self).__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-input mb-4 p-2 border rounded focus:outline-none focus:border-blue-500'})
+            
+        # Add additional styling for specific fields if needed
+        self.fields['name'].widget.attrs.update({'placeholder': 'Your Name'})
+        self.fields['contact_number'].widget.attrs.update({'placeholder': 'Your Contact Number'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'Your Email'})
+        self.fields['eduction'].widget.attrs.update({'class': 'form-select mb-4 p-2 border rounded focus:outline-none focus:border-blue-500'})
+        self.fields['School_or_College_name'].widget.attrs.update({'class': 'form-select mb-4 p-2 border rounded focus:outline-none focus:border-blue-500'})
+
+    # You can add additional customization if needed
+    # For example, you might want to customize the labels or placeholders
+    # or add additional validation.
+

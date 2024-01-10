@@ -1,0 +1,45 @@
+{% extends 'base_tw.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto p-8 flex justify-center items-center h-screen">
+    <div class="max-w-md bg-white p-8 rounded-md shadow-md">
+        <h1 class="text-3xl font-semibold mb-6 text-center">Event Registration</h1>
+        {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible relative" role="alert">
+            <div class="bg-blue-500 text-white my-2 p-4 container mx-auto text-center rounded">
+                {{ message }}
+            </div>
+        </div>
+        {% endfor %}
+        <form method="post" class="grid grid-cols-1 gap-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="id_name" class="block text-sm font-medium text-gray-600">Name</label>
+                {{ form.name }}
+            </div>
+            <div>
+                <label for="id_contact_number" class="block text-sm font-medium text-gray-600">Contact Number</label>
+                {{ form.contact_number }}
+            </div>
+            <div>
+                <label for="id_email" class="block text-sm font-medium text-gray-600">Email</label>
+                {{ form.email }}
+            </div>
+            <div>
+                <label for="id_education" class="block text-sm font-medium text-gray-600">Education</label>
+                {{ form.eduction }}
+            </div>
+            <div>
+                <label for="id_School_or_College_name" class="block text-sm font-medium text-gray-600">School or College Name</label>
+                {{ form.School_or_College_name }}
+            </div>
+
+            <div class="flex items-center justify-center">
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

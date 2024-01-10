@@ -558,44 +558,48 @@ def liveSearch(request):
 
 
 def accessCourse(request,slug):
-
     usercoin = UserCoin.objects.filter(user = request.user).first()
     course = Course.objects.filter(slug = slug).first()
     lesson = course.lessons_set.all().first()
     coursestatus = UserCourseStatus.objects.filter(user = request.user,course = course).first()
-    if not coursestatus.can_access:
+    lessoncount  = course.lessons_set.all().count()
+    
 
-        if request.method == "POST":
-            usercoursestatus = UserCourseStatus.objects.filter(user = request.user,course = course).first()
-            
-            if usercoursestatus:
-                usercoin_ = UserCoin.objects.filter(user = request.user).first()
-                usercoin_.coin_amount = usercoin_.coin_amount - course.required_points
-                usercoin_.save()
-
-
-                usercoursestatus.can_access = True
-                usercoursestatus.save()
-                return redirect(reverse('course_lesson' ,kwargs={'slug':slug,'lesson_slug':lesson.slug}))
-
-            else: 
-                usercoursestatus_ = UserCourseStatus(user = request.user,course = course,can_access = True)
-                usercoin_ = UserCoin.objects.filter(user = request.user).first()
-                usercoin_.coin_amount = usercoin_.coin_amount - course.required_points
-                usercoin_.save()
-                usercoursestatus_.save()
-                return redirect(reverse('course_lesson' ,kwargs={'slug':slug,'lesson_slug':lesson.slug}))
-
-        else:
+    if request.method == "POST":
+        usercoursestatus = UserCourseStatus.objects.filter(user = request.user,course = course).first()
         
+        if usercoursestatus:
+            usercoin_ = UserCoin.objects.filter(user = request.user).first()
+            usercoin_.coin_amount = usercoin_.coin_amount - course.required_points
+            usercoin_.save()
+
+
+            usercoursestatus.can_access = True
+            usercoursestatus.save()
+            if lessoncount<1:
+                return redirect('/')
+            return redirect(reverse('course_lesson' ,kwargs={'slug':slug,'lesson_slug':lesson.slug}))
+
+        else: 
+            usercoursestatus_ = UserCourseStatus(user = request.user,course = course,can_access = True)
+            usercoin_ = UserCoin.objects.filter(user = request.user).first()
+            usercoin_.coin_amount = usercoin_.coin_amount - course.required_points
+            usercoin_.save()
+            usercoursestatus_.save()
+            if lessoncount<1:
+                return redirect('/')
+            return redirect(reverse('course_lesson' ,kwargs={'slug':slug,'lesson_slug':lesson.slug}))
+
+    else:
+        if usercoin: 
             if int(usercoin.coin_amount)<int(course.required_points) :
                 validate = False
             else:
                 validate = True
-            return render(request,'cmsapp/accessCourseDetail.html',{'validate':validate})
-    else:
-        print()
-        return redirect('/')
+        else:
+            validate = False
+        return render(request,'cmsapp/accessCourseDetail.html',{'validate':validate})
+
     
 
 def buycoins(request):
@@ -645,8 +649,28 @@ def verify(request):
     paisa_amount = request.GET.get('amount')
     coin_amount = int(paisa_amount)/100
     usercoin = UserCoin.objects.filter(user = request.user).first()
-    usercoin.coin_amount = usercoin.coin_amount + coin_amount
-    usercoin.save()
-
+    if usercoin:
+        usercoin.coin_amount = usercoin.coin_amount + coin_amount
+        usercoin.save()
+        messages.success(request,f"successfully added {coin_amount} coins")
+    else:
+        usercoin = UserCoin(user = request.user,coin_amount = coin_amount)
+        usercoin.save()
+        messages.success(request,f"successfully added {coin_amount} coins")
 
     return redirect('home')
+
+def eventRegister(request,pk):
+    if request.method == 'POST':
+        event = Event.objects.filter(pk = pk).first()
+        form = EventRegisterForm(request.POST)
+        if form.is_valid():
+            # Process the form data if needed
+            submit = form.save(commit=False)
+            submit.event = event
+            submit.save()
+            messages.success(request,'successfully registered')
+    else:
+        form = EventRegisterForm()
+
+    return render(request, 'cmsapp/eventRegister.html', {'form': form})

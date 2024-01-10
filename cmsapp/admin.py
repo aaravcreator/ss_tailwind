@@ -74,3 +74,4 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(UserCourseStatus)
 admin.site.register(UserCoin)
+admin.site.register(EventRegister)
