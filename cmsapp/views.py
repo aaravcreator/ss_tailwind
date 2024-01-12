@@ -616,33 +616,37 @@ def khalti_request(request):
         coin_amount = request.POST.get('coin_amount')
         return_url = request.POST.get('return_url')
         
-        amount = int(coin_amount)*100
-        print(return_url)
-        print(purchase_order_id)
-        print(amount)
+        
+        if not coin_amount:
+            messages.success(request,' Enter the amount of coins')
+            return redirect('/coinStatus')
+        else:
+            amount = int(coin_amount)*100
+            if amount<1000:
+                messages.success(request,'The coin should be atleast greater than 10')
 
-
-        payload = json.dumps({
-            "return_url": return_url,
-            "website_url": "http://127.0.0.1:8000/",
-            "amount": amount,
-            "purchase_order_id": purchase_order_id,
-            "purchase_order_name": "test",
-            "customer_info": {
-            "name": "bisesh adhikari",
-            "email": "adhikari1590@gmail.com",
-            "phone": "9800000001"
+                return redirect('/coinStatus')
+            payload = json.dumps({
+                "return_url": return_url,
+                "website_url": "http://127.0.0.1:8000/",
+                "amount": amount,
+                "purchase_order_id": purchase_order_id,
+                "purchase_order_name": "test",
+                "customer_info": {
+                "name": "bisesh adhikari",
+                "email": "adhikari1590@gmail.com",
+                "phone": "9800000001"
+                }
+            })
+            headers = {
+                'Authorization': 'key 55dbe8ff588b4434adb16309045db658',
+                'Content-Type': 'application/json',
             }
-        })
-        headers = {
-            'Authorization': 'key 55dbe8ff588b4434adb16309045db658',
-            'Content-Type': 'application/json',
-        }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
-        new_res = json.loads(response.text)
+            response = requests.request("POST", url, headers=headers, data=payload)
+            new_res = json.loads(response.text)
 
-        return redirect(new_res['payment_url'])
+            return redirect(new_res['payment_url'])
 
 
 def verify(request):
@@ -670,6 +674,7 @@ def eventRegister(request,pk):
             submit.event = event
             submit.save()
             messages.success(request,'successfully registered')
+            
     else:
         form = EventRegisterForm()
 

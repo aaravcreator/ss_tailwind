@@ -2,8 +2,38 @@
 {% load static %}
 
 {% block content %}
+<style>
+    .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #fff;
+    text-decoration: none;
+    opacity: .75;
+}
+</style>
 <div class="container mx-auto mt-8">
+
+    
     <div class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md mt-3">
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible relative" role="alert">
+                <div class="bg-blue-500 text-white my-2 p-4 container mx-auto text-center rounded">
+                    {{ message }}
+                </div>
+                <button type="button" class="close-btn">X</button>
+            </div>
+        {% endfor %}
         <h1 class="text-center font-bold text-[20px] mb-5">Available Coins:&#129689; {{usercoin.coin_amount}}</h1>
         <h2 class="text-2xl font-semibold mb-6 text-green-500 text-center">Buy Coins</h2>
 
@@ -26,4 +56,21 @@
         </form>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const alertContainers = document.querySelectorAll('.alert');
+
+    alertContainers.forEach(alertContainer => {
+        const closeButton = alertContainer.querySelector('.close-btn');
+        setTimeout(() => {
+            alertContainer.style.display = 'none';
+        }, 10000); // 30 seconds
+
+        closeButton.addEventListener('click', () => {
+            alertContainer.style.display = 'none';
+        });
+    });
+});
+
+</script>
 {% endblock content %}

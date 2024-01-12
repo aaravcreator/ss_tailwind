@@ -71,7 +71,7 @@
                     </svg>
                     <h2 class="ml-2 text-md font-light text-gray-800"> AIMS College, Biratnagar, Morang</h2>
                     <div class="block">
-                        <a href="{%url 'evetRegister' event.pk%}"
+                        <a href="{%url 'eventRegister' event.pk%}"
                             class="inline p-2 ml-auto text-white bg-blue-500 rounded-md hover:bg-blue-600">Register</a>
                     </div>
                 </div>
@@ -106,6 +106,8 @@
     <div class="ring-1 ring-gray-300 relative max-w-md mx-auto rounded-xl overflow-hidden shadow-md my-2">
         <img class="h-64 w-full object-cover rounded-t-md" src="{{course.image.url}}" alt="{{course.title}}">
         <div class="p-6">
+            <h1 class="font-bold mt-5 text-[20px]">{{course.title}}</h1>
+
             <div class="flex flex-row-reverse">
                 <div class="ml-2 uppercase tracking-wide text-sm text-indigo-500 font-semibold">{{course.category}}
                 </div>
@@ -116,15 +118,20 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
                 </svg>
             </div>
+            {%if request.user.is_authenticated%}
             <a href="{% if not course|course_status:request.user %}{% url 'accessCourse' course.slug %}{% else %}{% url 'course' course.slug %}{% endif %}"
-                class="block mt-4 text-lg font-semibold text-gray-800">
+                class="block mt-4 p-3 bg-green-500 rounded-xl shadow-xl text-lg font-semibold text-white">
                 {% if not course|course_status:request.user %}
                 Access Course for {{course.required_points}}&#129689;
                 {% else %}
                 Visit Course
                 {% endif %}
             </a>
+            {%else%}
+            <a href="{%url 'login'%}" class="block mt-4 p-3 bg-red-500 rounded-xl shadow-xl text-lg font-semibold text-white">Login To Continue</a>
+            {%endif%}
         </div>
+        
     </div>
     {% endfor %}
 </div>

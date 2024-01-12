@@ -246,6 +246,11 @@ class EventRegister(models.Model):
         ('+2','+2'),
         ('Bachelors','Bachelors'),
     ]
+    PAYMENT_CHOICES = [
+        
+        ('KHALTI','KHALTI'),
+        ('CASH','CASH'),
+    ]
     event = models.ForeignKey(Event,on_delete = models.CASCADE,null = True,blank = True)
     name = models.CharField(max_length = 200)
     contact_number = models.CharField(max_length = 200)
@@ -253,4 +258,5 @@ class EventRegister(models.Model):
     eduction = models.CharField(choices= CHOICES,max_length=20)
     School_or_College_name = models.CharField(max_length=200)
     is_verified = models.BooleanField(default = False)
+    payment_method = models.CharField(choices = PAYMENT_CHOICES,max_length = 300,default = "CASH" )
 

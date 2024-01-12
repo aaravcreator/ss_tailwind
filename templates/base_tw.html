@@ -75,15 +75,18 @@
                         </div>
                         <a class="px-5 flex justify-center items-center py-1 shadow-lg hover:scale-105 mr-2 bg-indigo-500 text-white rounded-full" href="{%url 'dashboard:dashboard_index'%}">Dashboard</a>
                         <div class="px-5 cursor-pointer flex flex-col justify-center items-center shadow-lg hover:scale-105 mr-2 bg-white text-black rounded-full" >
+                            {%if request.user.usercoin_set.all.first%}
                             <a href = "{%url 'coinStatus'%}">&#129689; {{request.user.usercoin_set.all.first.coin_amount}} Coins</a>
+                            {%else%}
+                            <a href = "{%url 'coinStatus'%}">&#129689; 0 Coins</a>
+                            {%endif%}
                             
                         </div>
                         <a class="px-5  flex justify-center items-center py-1 shadow-lg hover:scale-105 mr-2 bg-white text-gray-700 rounded-full" href="{%url 'logout'%}">Logout</a>
                         {% endif %}
                         
                         </div>
-                   
-                        
+ 
                 </div>
             </div>
         </div>
@@ -112,11 +115,7 @@
                 class="block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-base font-medium">Events</a>
         </div>
     </div>
-
-
-    
 </nav>
-    
     {% block content %}
     {% endblock content %}
 
@@ -126,7 +125,7 @@
                 <a class="flex title-font font-medium items-center text-white" href="#">
                     <img src="{% static 'img/sikshyashala.svg' %}" class="w-12 h-12" alt="Sikshyashala Logo">
                 </a>
-                <p class="mt-2 text-sm text-black">Your Education, Your Choice</p>
+                <p class="mt-2 text-sm text-white">Your Education, Your Choice</p>
             </div>
         </div>
         <div class="bg-gray-800">
@@ -170,7 +169,5 @@
             </div>
         </div>
     </footer>
-
 </body>
-
 </html>

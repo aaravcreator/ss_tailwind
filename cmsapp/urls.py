@@ -32,7 +32,7 @@ urlpatterns = [
     path('coinStatus',views.buycoins,name = "coinStatus"),
     path('verify/',views.verify,name = "verify"),
     path('initiate/',views.khalti_request,name = "initiate"),
-    path('forms/<int:pk>', views.eventRegister, name='evetRegister'),
+    path('forms/<int:pk>/', views.eventRegister, name='eventRegister'),
     
 
 ]
